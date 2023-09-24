@@ -1,17 +1,16 @@
 import mysql.connector
 import logging
+from decouple import config
 
 logging.basicConfig(level=logging.INFO)
 
-# Define your MySQL connection parameters
 db_config = {
-    "host": "localhost",
-    "user": "kaosi",  # Replace with your MySQL username
-    "password": "Thisisus@20",  # Replace with your MySQL password
-    "database": "news_articles",  # Replace with your database name
+    "host": config('DB_HOST'),
+    "user": config('DB_USER'),
+    "password": config('DB_PASSWORD'),
+    "database": config('DB_NAME'),
 }
 
-# Connect to MySQL
 try:
     connection = mysql.connector.connect(**db_config)
     if connection.is_connected():
@@ -20,13 +19,11 @@ try:
         cursor.execute("SELECT 1")
         result = cursor.fetchone()
         print("Test query result:", result)
-
     else:
         logging.info("Failed to connect to MySQL")
 except mysql.connector.Error as err:
     logging.info(f"Error: {err}")
-
 finally:
-   if "connection" in locals() and connection.is_connected():
+    if "connection" in locals() and connection.is_connected():
         connection.close()
         logging.info("MySQL connection closed")
